@@ -1,0 +1,141 @@
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.AbstractGrid;
+import info.gridworld.grid.Location;
+
+import java.util.ArrayList;
+
+/**
+ * A <code>BoundedGrid</code> is a rectangular grid with a finite number of
+ * rows and columns. <br />
+ * The implementation of this class is testable on the AP CS AB exam.
+ */
+public class SparseBoundedGrid<E> extends AbstractGrid<E> {
+    // the array storing the SparseGridNode elements
+    private SparseGridNode[] occupantArray;
+	private int numRows;
+	private int numCols;
+    /**Constructs an occupantArray with numRows SparssGrideNode
+     * (Precondition: <code>rows > 0</code> and <code>cols > 0</code>.)
+     * @param numRows number of rows in BoundedGrid
+     * @param numCols number of columns in BoundedGrid
+     */
+    /**Constructs an occupantArray with numRows SparssGrideNode
+     * (Precondition: <code>rows > 0</code> and <code>cols > 0</code>.)
+     * @param numRows number of rows in BoundedGrid
+     * @param numCols number of columns in BoundedGrid
+     *//**Constructs an occupantArray with numRows SparssGrideNode
+     * (Precondition: <code>rows > 0</code> and <code>cols > 0</code>.)
+     * @param numRows number of rows in BoundedGrid
+     * @param numCols number of columns in BoundedGrid
+     */
+	public SparseBoundedGrid(int row, int col) {
+		if (row <= 0) {
+			throw new IllegalArgumentException("row <= 0");
+		}
+		if (col <= 0) {
+			throw new IllegalArgumentException("col <= 0");
+		}
+		numRows = row;
+		numCols = col;
+        occupantArray = new SparseGridNode[numRows];
+	}
+
+	public int getNumRows() {
+		return numRows;
+	}
+
+    public int getNumCols() {
+	    return numCols;
+    }
+    
+    public boolean isValid(Location loc) {
+        return 0 <= loc.getRow() && loc.getRow() < getNumRows()  && 0 <= loc.getCol() && loc.getCol() < getNumCols();
+    }
+
+    public ArrayList<Location> getOccupiedLocations()
+    {
+        ArrayList<Location> theLocations = new ArrayList<Location>();
+
+        // Look at all grid locations.
+        for (int r = 0; r < getNumRows(); r++) {
+            SparseGridNode temp = occupantArray[r];
+            while (temp != null) {
+                // If there's an object at this location, put it in the array.
+                Location loc = new Location(r, temp.getColumn());
+                theLocations.add(loc);
+                temp = temp.getNext();
+            }
+        }
+        return theLocations;
+    }
+    
+    public E get(Location loc) {
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc
+                    + " is not valid");
+        }
+        if (loc == null) {
+            throw new NullPointerException("loc == null");
+        }
+        SparseGridNode temp = occupantArray[loc.getRow()];
+        while (temp != null) {
+            if (loc.getCol() == temp.getColumn()) {
+                return (E)temp.getOccupant();
+            }
+            temp = temp.getNext();
+        }
+        return null;
+    }
+
+    public E put(Location loc, E obj) {
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc
+                    + " is not valid");
+        }
+        if (obj == null) {
+            throw new NullPointerException("obj == null");
+        }
+        if (loc == null) {
+            throw new NullPointerException("loc == null");
+        }
+        E oldOccupant = get(loc);
+
+        // Add the object to the grid.
+        SparseGridNode temp = occupantArray[loc.getRow()];
+        occupantArray[loc.getRow()] = new SparseGridNode(obj, loc.getCol(), temp);
+
+        return oldOccupant;
+    }
+    
+    public E remove(Location loc) {
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc
+                    + " is not valid");
+        }
+        // Remove the object from the grid
+        E r = get(loc);
+        if (r == null) {
+            return null;
+        }
+        SparseGridNode temp = occupantArray[loc.getRow()];
+        if (temp != null) {
+            //if first node is the one to remove
+            if (temp.getColumn() == loc.getCol()) {
+                occupantArray[loc.getRow()] = temp.getNext();
+            }
+            else
+            {
+            //treat it as linked list
+                SparseGridNode tempnext = temp.getNext();
+                while (tempnext != null && tempnext.getColumn() != loc.getCol()) {
+                    temp = temp.getNext();
+                    tempnext = tempnext.getNext();
+                }
+                if (tempnext != null) {
+                temp.setNext(tempnext.getNext());
+                }
+            }
+        }
+        return r;
+    }
+}

@@ -1,0 +1,29 @@
+import info.gridworld.actor.Bug;
+import java.util.Random;
+
+public class DancingBug extends Bug {
+	private int move[] = new int[100];
+	private int steps;
+        private int sidelength;
+	public DancingBug(int length) {
+		Random random = new Random();
+		for (int i = 0; i < length; i++) {
+			move[i] = Math.abs(random.nextInt()*10 % 10);
+		}
+		steps = 0;
+		sidelength = length;
+	}
+
+	public void act() {
+		int temp = move[steps];
+		while (temp > 0) {
+                        temp--;
+			turn();
+		}
+		move();
+		steps++;
+		if (steps == sidelength) {
+                    steps = 0;
+                }
+	}
+}

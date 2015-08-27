@@ -1,0 +1,54 @@
+import info.gridworld.actor.Actor;
+import info.gridworld.actor.Critter;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+public class BlusterCritter extends Critter {
+    private int courage;
+    private static final int CHANGING_FACTOR = 15;
+    public BlusterCritter(int c) {
+        setColor(Color.RED);
+        courage = c;
+    }
+
+    public ArrayList<Actor> getActors() {
+        ArrayList<Actor> actors = new ArrayList<Actor>();
+        Location loc = getLocation();
+        for (int row = loc.getRow() - 2; row <= loc.getRow() + 2; row++) {
+            for (int col = loc.getCol() - 2; col <= loc.getCol() + 2; col++) {
+                Location l = new Location(row, col);
+                if (getGrid().isValid(l)) {
+                    Actor actor = getGrid().get(l);
+                    if (actor != null && actor != this)
+                        actors.add(actor);
+                }
+            }
+        }
+        return actors;
+    }
+	public void processActors(ArrayList<Actor> actors) {
+        int count = 0;
+        for (Actor a: actors) {
+            if (a instanceof Critter)
+                count++;
+        }
+        Color c = getColor();
+        int red = c.getRed(), green = c.getGreen(), blue = c.getBlue();
+        if (count < courage) {
+            if (red > 0) red -= CHANGING_FACTOR;
+            if (green > 0) green -= CHANGING_FACTOR;
+            if (blue > 0) blue -= CHANGING_FACTOR;
+        }
+        else
+        {
+            if (red >= 0 && red < 255) red += CHANGING_FACTOR;
+            if (green >= 0 && green < 255) green += CHANGING_FACTOR;
+            if (blue >= 0 && blue < 255) blue += blue + CHANGING_FACTOR;
+        }
+        setColor(new Color(red, green, blue));
+        return;
+    }
+}

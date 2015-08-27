@@ -1,0 +1,14 @@
+import info.gridworld.actor.ActorWorld;
+import info.gridworld.grid.Location;
+
+import java.awt.Color;
+
+public class DancingBugRunner {
+	public static void main(String[] args) {
+		ActorWorld world = new ActorWorld();
+		DancingBug db = new DancingBug(10);
+		E.setColor(Color.CYAN);
+		world.add(new Location(5,5), db);
+		world.show();
+	}
+}

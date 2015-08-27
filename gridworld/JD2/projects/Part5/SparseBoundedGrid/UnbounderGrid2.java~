@@ -1,0 +1,108 @@
+import info.gridworld.grid.*;
+
+import java.util.ArrayList;
+import java.util.*;
+
+final static int S = 16; 
+/**
+ * An <code>UnboundedGrid</code> is a rectangular grid with an unbounded number of rows and
+ * columns. <br />
+ * The implementation of this class is testable on the AP CS AB exam.
+ */
+public class UnboundedGrid2<E> extends AbstractGrid<E> {
+	private Object[][] occupantMap;
+	private int size;
+    /**
+     * Constructs an empty unbounded grid.
+     */
+	public UnboundedGrid2() {
+		size = S;
+		occupantMap = new Object[size][size];
+	}
+
+	public int getNumRows() {
+		return -1;
+	}
+
+	public int getNumCols() {
+		return -1;
+	}
+
+	public boolean isValid(Location loc) {
+		return (loc.getRow() >= 0 && loc.getCol() >= 0);
+	}
+
+	public ArrayList<Location> getOccupiedLocations() {
+		ArrayList<Location> a = new ArrayList<Location>();
+
+		for (int r = 0; r < size; r++) {
+			for (int c = 0; c < size; c++) {
+				Location loc = new Location(r,c);
+				if (get(loc) != null) {
+					a.add(loc);
+				}
+			}
+		}
+	}
+
+    public E get(Location loc) {
+		if (!isValid(loc)) {
+			throw new IllegalArguementException("Location " + loc + " is not valid");
+		}
+        if (loc == null) {
+            throw new NullPointerException("loc == null");
+        }
+		if (loc.getRow() >= size || loc.getCol() >= size) {
+			return null;
+		}
+		return (E)occupantArray[loc.getRow()][loc.getCol()];
+	}
+
+	public E put(Location loc, E obj) {
+		if (loc == null) {
+			throw new NullPointerException("loc == null");
+		}
+		if (obj == null) {
+			throw new NullPointerException("obj == null");
+		}
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc
+                    + " is not valid");
+        }
+		if (loc.getRow() >= size || loc.getCol() >= size) {
+			resize(loc);
+		}
+        E oldOccupant = get(loc);
+		occupantArray[loc.getRow()][loc.getCol()] = obj;
+		return oldOccupant;
+	}
+
+	public E remove(Location loc) {
+        if (!isValid(loc)) {
+            throw new IllegalArgumentException("Location " + loc
+                    + " is not valid");
+        }
+        if (loc == null) {
+            throw new NullPointerException("loc == null");
+        }
+        if (loc.getRow() >= size || loc.getCol() >= size) {
+			return null;
+		}
+        E r = get(loc);
+        occupantArray[loc.getRow()][loc.getCol()] = null;
+        return r;
+	}
+
+    private void resize(Location loc) {
+        int oldsize = size;
+        while (loc.getRow() >= size || loc.getCol() >= size) {
+            size *= 2;
+        }
+        Object[][] temp = new Object[size][size];
+        for (int r = 0; r < oldsize; r++) {
+            for (int c = 0; c < oldsize; c++) {
+                temp[r][c] = occupantArray[r][c];
+            }
+        }
+        occupantArray = temp;
+    }

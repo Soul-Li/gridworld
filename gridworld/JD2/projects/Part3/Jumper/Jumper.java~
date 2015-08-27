@@ -1,0 +1,60 @@
+import info.gridworld.actor.Actor;
+import info.gridworld.actor.Flower;
+import info.gridworld.actor.Rock;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+
+import java.awt.Color;
+
+public class Jumper extends Actor {
+	public Jumper() {
+		setColor(Color.RED);
+	}
+
+	public Jumper(Color jumperColor) {
+		setColor(jumperColor);
+	}
+	public void act() {
+		if (canMove())
+			move();
+		else
+			turn();
+	}
+
+	public void turn() {
+		setDirection(getDirection() + Location.HALF_RIGHT);
+	}
+
+	public void move() {
+		Grid<Actor> gr = getGrid();
+		if (gr == null)
+			return;
+		Location loc = getLocation();
+		Location next = loc.getAdjacentLocation(getDirection());
+		Location twoMove = next.getAdjacentLocation(getDirection());
+		if (gr.isValid(twoMove))
+			moveTo(twoMove);
+		else
+			removeSelfFromGrid();
+	}
+
+	public void canMove() {
+		Grid<Actor> gr = getGrid();
+		if (gr == null)
+			return false;
+		Location loc = getLocation();
+		Location next = loc.getAdjacentLocation(getDirection());
+		if (!gr.isValid(next))
+			return false;
+		Actor neighbor = gr.get(next);
+		if (neighbor != null && !((neighbor instanceof Flower) || (neighbor instanceof Rock)))
+			return false;
+		Location twoMove = next.getAdjacentLocation(getDirection());
+		if (!gr.isValid(twoMove))
+			return false;
+		neighbor = gr.get(twoMove);
+		return (neighbor == null) || (neighbor instanceof Flower);
+	}
+}
+
+

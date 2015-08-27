@@ -1,0 +1,41 @@
+import info.gridworld.actor.Actor;
+import info.gridworld.actor.Critter;
+import info.gridworld.grid.Grid;
+import info.gridworld.grid.Location;
+
+import java.awt.Color;
+import java.util.ArrayList;
+
+/**
+ * A <code>CrabCritter</code> looks at a limited set of neighbors when it eats and moves.
+ * <br />
+ * This class is not tested on the AP CS A and AB exams.
+ */
+
+public class KingCrab extends CrabCritter {
+    public KingCrab() {
+        setColor(Color.BLUE);
+    }
+    
+    private boolean moveAway(Actor actor) {
+        ArrayList<Location> locs = getGrid().getEmptyAdjacentLocations(actor.getLocation());
+        for (Location loc:locs) {
+            int x1 = loc.getRow(), y1 = loc.getCol();
+            int x2 = getLocation().getRow(), y2 = getLocation().getCol();
+            double dis = Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))+0.5;
+            if (((int)Math.floor(dis)) > 1) {
+                actor.moveTo(loc);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void processActors(ArrayList<Actor> actors) {
+        for (Actor actor: actors) {
+            if (!moveAway(actor)) {
+                actor.removeSelfFromGrid();
+            }
+        }
+    }
+}

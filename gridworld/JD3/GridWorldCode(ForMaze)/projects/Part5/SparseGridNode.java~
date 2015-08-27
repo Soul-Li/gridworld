@@ -1,0 +1,31 @@
+public class SparseGridNode {
+	private Object occupant;
+	private int col;
+	private SparseGridNode next;
+
+	public SparseGridNode(Object occ, int column, SparseGridNode n) {
+		occupant = occ;
+		col = column;
+		next = n;
+	}
+
+	public Object getOccupant() {
+		return occupant;
+	}
+
+	public int getColumn() {
+		return col;
+	}
+
+	public SparseGridNode getNextSparseGridNode() {
+		return next;
+	}
+
+	public void setOccupant(Object obj) {
+		occupant = obj;
+	}
+
+	public void setNextSparseGridNode(SparseGridNode n) {
+		next = n;
+	}
+}

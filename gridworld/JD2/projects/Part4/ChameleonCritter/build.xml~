@@ -1,0 +1,41 @@
+<?xml version = "1.0"?>
+<project name = "GridWorld" default="jar" basedir=".">
+	<property name="jar.dir" value="/home/Administrator/Gridworld/GridWorldCode"/>
+	<property name="des.dir" value="ChameleonCritterBuild/classes"/>
+	<property name="src.dir" value="ChameleonCritter"/>
+	<property name="jar" value=".:${jar.dir}/gridworld.jar"/>
+    <property name="classname" value="ChameleonRunner" />
+	<property name="des.file" value="${src.dir}.jar" />
+
+	<target name="clean">
+		<delete dir="${des.dir}"/>
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="${des.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${des.dir}" classpath="${jar}" />
+	    </target>
+
+	<target name="run" depends="compile">
+		<java classname="${classname}" fork="true" classpath="${jar}">
+			<classpath>
+				<pathelement path="${des.dir}" />
+			</classpath>
+			</java>
+		</target>
+        <target name="copy-image" depends="run">
+            <copy todir="${des.dir}">
+                <fileset dir="${src.dir}">
+                    <include name="*.gif" />
+                </fileset>
+            </copy>
+        </target>
+
+		<target name="jar" depends="copy-image">
+			<jar destfile="${des.file}" basedir="${des.dir}">
+				<manifest>
+					<attribute name="Main-class" value="${src.dir}" />
+				</manifest>
+			</jar>
+		</target>
+	</project>

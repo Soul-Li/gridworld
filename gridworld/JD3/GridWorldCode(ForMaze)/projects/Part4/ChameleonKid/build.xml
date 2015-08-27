@@ -1,0 +1,35 @@
+<?xml version = "1.0"?>
+<project name = "GridWorld" default="jar" basedir=".">
+	<property name="jar.dir" value="/home/Administrator/Gridworld/GridWorldCode"/>
+	<property name="des.dir" value="ChameleonKidBuild/classes"/>
+	<property name="src.dir" value="ChameleonKid"/>
+    <property name="parent.jar" value="${jar.dir}/projects/Part4/ChameleonCritter/ChameleonCritter.jar" /> 
+	<property name="jar" value=".:${jar.dir}/gridworld.jar:${parent.jar}"/>   
+    <property name="classname" value="ChameleonKidRunner" />
+	<property name="des.file" value="${src.dir}.jar" />
+
+	<target name="clean">
+		<delete dir="${des.dir}"/>
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="${des.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${des.dir}" classpath="${jar}" />
+	    </target>
+
+	<target name="run" depends="compile">
+		<java classname="${classname}" fork="true" classpath="${jar}">
+			<classpath>
+				<pathelement path="${des.dir}" />
+			</classpath>
+			</java>
+		</target>
+
+		<target name="jar" depends="run">
+			<jar destfile="${des.file}" basedir="${des.dir}">
+				<manifest>
+					<attribute name="Main-class" value="${src.dir}" />
+				</manifest>
+			</jar>
+		</target>
+	</project>
